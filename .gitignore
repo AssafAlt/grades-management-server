@@ -1,0 +1,48 @@
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+*.db
+*.log
+*.pdb
+*.pidb
+*.swp
+*.suo
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.vs/
+.vscode/
+*.csproj.user
+*.csproj.lock
+*.build/
+*.vscode/
+*.nuget/
+*.nupkg
+*.snupkg
+*.sln.docstates
+*.nupkg
+*.DS_Store
+
+# ASP.NET Core
+wwwroot/
+node_modules/
+bower_components/
+
+# Rider
+.idea/
+
+# Mac
+*.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
