@@ -91,28 +91,6 @@ namespace api.repository
 
         public async Task<List<TeacherClassesDto>> GetClassesByTeacherIdAsync(string teacherId)
         {
-
-            /*    
-             var classDtos = await _context.Users
-            .Where(u => u.Id == teacherId)
-            .SelectMany(u => u.Classes)
-            .Select(c => new TeacherClassesDto
-            {
-                ClassId = c.ClassId,
-                ClassName = c.ClassName,
-                Students = c.Students.Select(s => new StudentDto
-                {
-                    StudentId = s.StudentId,
-                    FirstName = s.FirstName,
-                    LastName = s.LastName,
-                    Email = s.Email,
-                    Attendances = s.Attendances.Select(a => new AttendanceDto
-                    {
-                        Date =  a.Date,
-                        IsPresent = a.IsPresent
-                    }).ToList()
-                }).ToList()
-            }).ToListAsync();*/
             var classDtos = await _context.Users
     .Where(u => u.Id == teacherId)
     .SelectMany(u => u.Classes)
@@ -125,7 +103,7 @@ namespace api.repository
             StudentId = s.StudentId,
             FirstName = s.FirstName,
             LastName = s.LastName,
-            Email = s.Email,
+            PhoneNumber = s.PhoneNumber,
             Attendances = s.Attendances.Select(a => new AttendanceDto
             {
                 Date = a.Date,

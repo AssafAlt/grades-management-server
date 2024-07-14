@@ -30,7 +30,7 @@ namespace api.Controllers
             _classService = classService;
         }
 
-        [HttpGet("{classId:int}")]
+        [HttpGet("{classId:int}/class-stutents")]
         public async Task<IActionResult> GetAllStudentsByClassId([FromRoute] int classId)
         {
             var results = await _classService.GetStudentsByClassIdAsync(classId);
@@ -51,7 +51,7 @@ namespace api.Controllers
             return StatusCode(results.StatusCode, results.Data);
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> Create([FromBody] CreateClassDto classDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

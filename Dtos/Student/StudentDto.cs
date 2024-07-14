@@ -12,7 +12,7 @@ namespace api.Dtos.Student
         public string StudentId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
         public ICollection<AttendanceDto> Attendances { get; set; }
         public ICollection<GradeDto> Grades { get; set; }
     }

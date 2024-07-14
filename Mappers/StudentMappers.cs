@@ -9,12 +9,14 @@ namespace api.Mappers
 {
     public static class StudentMappers
     {
-        public static Student ToStudentFromCreate(this CreateStudentDto studentDto){
-            return new Student{
+        public static Student ToStudentFromCreate(this CreateStudentDto studentDto)
+        {
+            return new Student
+            {
                 StudentId = studentDto.StudentId,
                 FirstName = studentDto.FirstName,
                 LastName = studentDto.LastName,
-                Email = studentDto.Email,
+                PhoneNumber = studentDto.PrefixPhoneNumber + studentDto.PhoneNumber,
             };
         }
 

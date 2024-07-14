@@ -9,6 +9,6 @@ namespace api.Dtos.Class
     public class RemoveStudentRequestDto
     {
         [Required]
-        public string StudentId;
+        public string StudentId { get; set; }
     }
 }

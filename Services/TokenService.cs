@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace api.Services
 {
- public class TokenService : ITokenService
+    public class TokenService : ITokenService
     {
 
         private readonly IConfiguration _config;
@@ -30,7 +30,7 @@ namespace api.Services
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
-                
+
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);

@@ -24,9 +24,9 @@ builder.Services.AddSwaggerGen(option =>
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        In = ParameterLocation.Header,
+        In = ParameterLocation.Cookie,
         Description = "Please enter a valid token",
-        Name = "Authorization",
+        Name = "jwt_token",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
         Scheme = "Bearer"
@@ -113,10 +113,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(x => x
+.WithOrigins("http://localhost:3000")
      .AllowAnyMethod()
      .AllowAnyHeader()
      .AllowCredentials()
-      //.WithOrigins("https://localhost:44351))
+
       .SetIsOriginAllowed(origin => true));
 
 app.UseAuthentication();
@@ -126,3 +127,9 @@ app.MapControllers();
 
 app.Run();
 
+/*   .SetIsOriginAllowed(origin =>
+      {
+          if (string.IsNullOrWhiteSpace(origin)) return false;
+          if (origin.ToLower().StartsWith("http://localhost")) return true;
+          return false;
+      }));*/

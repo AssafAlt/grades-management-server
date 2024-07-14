@@ -141,3 +141,4 @@ C:\Users\asafa\Desktop\Development\dotnet\grades-management\api\obj\Debug\net8.0
 C:\Users\asafa\Desktop\Development\dotnet\grades-management\api\obj\Debug\net8.0\api.pdb
 C:\Users\asafa\Desktop\Development\dotnet\grades-management\api\obj\Debug\net8.0\api.genruntimeconfig.cache
 C:\Users\asafa\Desktop\Development\dotnet\grades-management\api\obj\Debug\net8.0\ref\api.dll
+C:\Users\asafa\Desktop\Development\dotnet\grades-management\api\obj\Debug\net8.0\api.sourcelink.json
