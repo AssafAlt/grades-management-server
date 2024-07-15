@@ -14,9 +14,20 @@ namespace api.Mappers
             return new Student
             {
                 StudentId = studentDto.StudentId,
-                FirstName = studentDto.FirstName,
-                LastName = studentDto.LastName,
+                FirstName = studentDto.FirstName.ToLower(),
+                LastName = studentDto.LastName.ToLower(),
                 PhoneNumber = studentDto.PrefixPhoneNumber + studentDto.PhoneNumber,
+            };
+        }
+
+        public static NewStudentDto ToNewStudentDtoFromModel(this Student studentModel)
+        {
+            return new NewStudentDto
+            {
+                StudentId = studentModel.StudentId,
+                FirstName = studentModel.FirstName,
+                LastName = studentModel.LastName,
+                PhoneNumber = studentModel.PhoneNumber,
             };
         }
 

@@ -19,10 +19,11 @@ namespace api.repository
             _context = context;
         }
 
-        public async Task CreateAsync(Student studentModel)
+        public async Task<Student> CreateAsync(Student studentModel)
         {
             await _context.Students.AddAsync(studentModel);
             await _context.SaveChangesAsync();
+            return studentModel;
 
         }
 
@@ -60,10 +61,7 @@ namespace api.repository
 
         public async Task<List<Student>> GetAllAsync()
         {
-            var students = _context.Students.Include(s => s.Classes);
-
-            if (students == null) return null;
-            return await students.ToListAsync();
+            return await _context.Students.ToListAsync();
         }
 
 

@@ -34,7 +34,7 @@ namespace api.Controllers
 
             var results = await _studentService.CreateAsync(studentDto);
 
-            return StatusCode(results.StatusCode, results.Message);
+            return StatusCode(results.StatusCode, results.Data);
 
 
         }

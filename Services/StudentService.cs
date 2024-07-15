@@ -28,8 +28,8 @@ namespace api.Services
             try
             {
                 var studentModel = studentDto.ToStudentFromCreate();
-                await _studentRepo.CreateAsync(studentModel);
-                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Student was created successfully" };
+                var newStudent = await _studentRepo.CreateAsync(studentModel);
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Student was created successfully", Data = newStudent.ToNewStudentDtoFromModel() };
             }
             catch (Exception ex)
             {
@@ -55,12 +55,16 @@ namespace api.Services
             try
             {
                 var students = await _studentRepo.GetAllAsync();
-                if (students == null) return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "There are no students!" };
+
+                if (students == null || !students.Any())
+                {
+                    return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "There are no students!" };
+                }
+
                 return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = students };
             }
             catch (Exception ex)
             {
-
                 return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
             }
         }
@@ -70,7 +74,7 @@ namespace api.Services
             {
                 var result = await _studentRepo.DeleteAsync(studentId);
                 if (result == null) return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "There are no student!" };
-                return new ServiceResult { StatusCode = StatusCodes.Status200OK, Message = "Student was deleted successfully!" };
+                return new ServiceResult { StatusCode = StatusCodes.Status204NoContent, Message = "Student was deleted successfully!" };
             }
             catch (Exception ex)
             {
