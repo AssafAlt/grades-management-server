@@ -26,13 +26,25 @@ namespace api.Controllers
             _studentService = studentService;
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateStudentDto studentDto)
         {
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var results = await _studentService.CreateAsync(studentDto);
+
+            return StatusCode(results.StatusCode, results.Message);
+
+
+        }
+        [HttpPost("create-multiple")]
+        public async Task<IActionResult> CreateMultiple([FromBody] CreateStudentDto[] studentDtos)
+        {
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var results = await _studentService.CreateMultipleAsync(studentDtos);
 
             return StatusCode(results.StatusCode, results.Message);
 

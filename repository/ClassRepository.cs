@@ -106,7 +106,7 @@ namespace api.repository
             PhoneNumber = s.PhoneNumber,
             Attendances = s.Attendances.Select(a => new AttendanceDto
             {
-                Date = a.Date,
+                Date = a.Date.ToString("MM-dd-yyyy"),
                 IsPresent = a.IsPresent
             }).ToList(),
             Grades = s.Grades.Select(g => new GradeDto

@@ -9,6 +9,7 @@ namespace api.Interfaces.Repository
     public interface IStudentRepository
     {
         public Task CreateAsync(Student studentModel);
+        public Task CreateMultipleAsync(Student[] studentModels);
         public Task<int?> DeleteAsync(string studentId);
         public Task<List<Student>> GetAllAsync();
     }

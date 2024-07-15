@@ -79,6 +79,18 @@ namespace api.Services
             }
         }
 
-
+        public async Task<ServiceResult> CreateMultipleAsync(CreateStudentDto[] studentDtos)
+        {
+            try
+            {
+                var studentModels = studentDtos.Select(dto => dto.ToStudentFromCreate()).ToArray();
+                await _studentRepo.CreateMultipleAsync(studentModels);
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Students were created successfully" };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+            }
+        }
     }
 }

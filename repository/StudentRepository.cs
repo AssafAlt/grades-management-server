@@ -23,31 +23,49 @@ namespace api.repository
         {
             await _context.Students.AddAsync(studentModel);
             await _context.SaveChangesAsync();
-            
+
+        }
+
+        public async Task CreateMultipleAsync(Student[] studentModels)
+        {
+            // Get the IDs of students that already exist in the database
+            var existingStudentIds = await _context.Students
+                                                   .Where(s => studentModels.Select(sm => sm.StudentId).Contains(s.StudentId))
+                                                   .Select(s => s.StudentId)
+                                                   .ToListAsync();
+
+            // Filter out students that already exist
+            var newStudents = studentModels.Where(sm => !existingStudentIds.Contains(sm.StudentId)).ToArray();
+
+            if (newStudents.Any())
+            {
+                await _context.Students.AddRangeAsync(newStudents);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<int?> DeleteAsync(string studentId)
         {
-             var studentModel = await _context.Students.FirstOrDefaultAsync(x => x.StudentId == studentId);
+            var studentModel = await _context.Students.FirstOrDefaultAsync(x => x.StudentId == studentId);
 
             if (studentModel == null) return null;
-                
-            
+
+
             _context.Students.Remove(studentModel);
             await _context.SaveChangesAsync();
 
             return 1;
-            
+
         }
 
         public async Task<List<Student>> GetAllAsync()
         {
             var students = _context.Students.Include(s => s.Classes);
 
-            if(students == null) return null;
+            if (students == null) return null;
             return await students.ToListAsync();
         }
 
-      
+
     }
 }
