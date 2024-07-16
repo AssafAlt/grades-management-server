@@ -16,7 +16,7 @@ namespace api.Dtos.Student
         [Required]
         public string LastName { get; set; }
 
-        [RegularExpression(@"^\d{2,3}$", ErrorMessage = "Prefix must be numeric and 2 to 3 digits long.")]
+        [RegularExpression(@"^0\d{1,2}$", ErrorMessage = "Prefix must be numeric, start with 0, and be 2 to 3 digits long.")]
         public string PrefixPhoneNumber { get; set; }
 
         [RegularExpression(@"^\d{7}$", ErrorMessage = "Phone number must be exactly 7 digits.")]

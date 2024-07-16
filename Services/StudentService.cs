@@ -88,8 +88,20 @@ namespace api.Services
             try
             {
                 var studentModels = studentDtos.Select(dto => dto.ToStudentFromCreate()).ToArray();
-                await _studentRepo.CreateMultipleAsync(studentModels);
-                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Students were created successfully" };
+                var newStudentsModels = await _studentRepo.CreateMultipleAsync(studentModels);
+                if (newStudentsModels.Length == 0) return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status409Conflict,
+                    Message = "All students already exist."
+                };
+                else if (newStudentsModels.Length < studentModels.Length) return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status206PartialContent, // Partial content status code
+                    Message = "Some students were created successfully.",
+                    Data = newStudentsModels
+                };
+
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Students were created successfully", Data = newStudentsModels };
             }
             catch (Exception ex)
             {

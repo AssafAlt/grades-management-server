@@ -38,7 +38,7 @@ namespace api.Controllers
 
 
         }
-        [HttpPost("create-multiple")]
+        [HttpPost("create-csv")]
         public async Task<IActionResult> CreateMultiple([FromBody] CreateStudentDto[] studentDtos)
         {
 
@@ -46,7 +46,7 @@ namespace api.Controllers
 
             var results = await _studentService.CreateMultipleAsync(studentDtos);
 
-            return StatusCode(results.StatusCode, results.Message);
+            return StatusCode(results.StatusCode, results.Data);
 
 
         }

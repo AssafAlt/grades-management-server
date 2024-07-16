@@ -27,7 +27,7 @@ namespace api.repository
 
         }
 
-        public async Task CreateMultipleAsync(Student[] studentModels)
+        public async Task<Student[]> CreateMultipleAsync(Student[] studentModels)
         {
             // Get the IDs of students that already exist in the database
             var existingStudentIds = await _context.Students
@@ -43,6 +43,9 @@ namespace api.repository
                 await _context.Students.AddRangeAsync(newStudents);
                 await _context.SaveChangesAsync();
             }
+
+            // Return the newly created students
+            return newStudents;
         }
 
         public async Task<int?> DeleteAsync(string studentId)
