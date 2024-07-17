@@ -62,86 +62,130 @@ namespace api.repository
         }
 
 
-        public async Task AddStudentsToClassAsync(int classId, List<string> studentIds)
+        /* public async Task AddStudentsToClassAsync(int classId, List<string> studentIds)
+         {
+             var classModel = await _context.Classes
+             .Include(c => c.Students)
+             .FirstOrDefaultAsync(c => c.ClassId == classId);
+
+             if (classModel == null) return;
+
+             var studentsToAdd = await _context.Students
+             .Where(s => studentIds.Contains(s.StudentId))
+             .ToListAsync();
+
+             foreach (var student in studentsToAdd)
+             {
+                 if (!classModel.Students.Any(s => s.StudentId == student.StudentId)) classModel.Students.Add(student);
+             }
+
+             await _context.SaveChangesAsync();
+         }*/
+        public async Task<List<NewStudentDto>> AddStudentsToClassAsync(int classId, List<string> studentIds)
         {
             var classModel = await _context.Classes
-            .Include(c => c.Students)
-            .FirstOrDefaultAsync(c => c.ClassId == classId);
+                .Include(c => c.Students)
+                .FirstOrDefaultAsync(c => c.ClassId == classId);
 
-            if (classModel == null) return;
+            if (classModel == null) return null;
 
             var studentsToAdd = await _context.Students
-            .Where(s => studentIds.Contains(s.StudentId))
-            .ToListAsync();
+                .Where(s => studentIds.Contains(s.StudentId))
+                .ToListAsync();
+
+            var addedStudents = new List<NewStudentDto>();
 
             foreach (var student in studentsToAdd)
             {
-                if (!classModel.Students.Any(s => s.StudentId == student.StudentId)) classModel.Students.Add(student);
+                if (!classModel.Students.Any(s => s.StudentId == student.StudentId))
+                {
+                    classModel.Students.Add(student);
+                    addedStudents.Add(student.ToNewStudentDtoFromModel());
+                }
             }
 
             await _context.SaveChangesAsync();
+
+            return addedStudents;
         }
 
-        public async Task CreateAsync(Class classModel)
+
+        public async Task<NewClassDto> CreateAsync(Class classModel)
         {
             await _context.Classes.AddAsync(classModel);
             await _context.SaveChangesAsync();
+            return classModel.ToNewClassDtoFromModel(0);
 
         }
 
-        public async Task<List<TeacherClassesDto>> GetClassesByTeacherIdAsync(string teacherId)
+        /*     public async Task<List<TeacherClassesDto>> GetClassesByTeacherIdAsync(string teacherId)
+             {
+                 var classDtos = await _context.Users
+         .Where(u => u.Id == teacherId)
+         .SelectMany(u => u.Classes)
+         .Select(c => new TeacherClassesDto
+         {
+             ClassId = c.ClassId,
+             ClassName = c.ClassName,
+             Students = c.Students.Select(s => new StudentDto
+             {
+                 StudentId = s.StudentId,
+                 FirstName = s.FirstName,
+                 LastName = s.LastName,
+                 PhoneNumber = s.PhoneNumber,
+                 Attendances = s.Attendances.Select(a => new AttendanceDto
+                 {
+                     Date = a.Date.ToString("MM-dd-yyyy"),
+                     IsPresent = a.IsPresent
+                 }).ToList(),
+                 Grades = s.Grades.Select(g => new GradeDto
+                 {
+                     Name = g.GradeItem.Name,
+                     Weight = g.GradeItem.Weight,
+                     Score = g.Score
+                 }).ToList()
+             }).ToList(),
+             GradeItems = c.GradeItems.Select(g => new GradeItemDto
+             {
+                 GradeItemId = g.GradeItemId,
+                 Name = g.Name,
+                 Weight = g.Weight
+             }).ToList()
+         }).ToListAsync();
+                 if (classDtos == null) return null;
+
+                 return classDtos;
+
+
+             }
+     */
+        public async Task<List<NewClassDto>> GetClassesByTeacherIdAsync(string teacherId)
         {
-            var classDtos = await _context.Users
-    .Where(u => u.Id == teacherId)
-    .SelectMany(u => u.Classes)
-    .Select(c => new TeacherClassesDto
-    {
-        ClassId = c.ClassId,
-        ClassName = c.ClassName,
-        Students = c.Students.Select(s => new StudentDto
-        {
-            StudentId = s.StudentId,
-            FirstName = s.FirstName,
-            LastName = s.LastName,
-            PhoneNumber = s.PhoneNumber,
-            Attendances = s.Attendances.Select(a => new AttendanceDto
-            {
-                Date = a.Date.ToString("MM-dd-yyyy"),
-                IsPresent = a.IsPresent
-            }).ToList(),
-            Grades = s.Grades.Select(g => new GradeDto
-            {
-                Name = g.GradeItem.Name,
-                Weight = g.GradeItem.Weight,
-                Score = g.Score
-            }).ToList()
-        }).ToList(),
-        GradeItems = c.GradeItems.Select(g => new GradeItemDto
-        {
-            GradeItemId = g.GradeItemId,
-            Name = g.Name,
-            Weight = g.Weight
-        }).ToList()
-    }).ToListAsync();
-            if (classDtos == null) return null;
+            var classes = await _context.Users
+            .Where(u => u.Id == teacherId)
+            .SelectMany(u => u.Classes)
+            .Include(c => c.Students)
+            .ToListAsync();
+            var classDtos = classes.Select(c => c.ToNewClassDtoFromModel(c.Students?.Count() ?? 0)).ToList();
 
             return classDtos;
-
-
         }
-
-        public async Task<List<Student>> GetStudentsByClassIdAsync(int classId)
+        public async Task<List<NewStudentDto>> GetStudentsByClassIdAsync(int classId)
         {
-
-            var studentsInClass = _context.Students
-                .Where(s => s.Classes.Any(c => c.ClassId == classId));
-
+            var studentsInClass = await _context.Students
+                .Where(s => s.Classes.Any(c => c.ClassId == classId))
+                .Select(s => s.ToNewStudentDtoFromModel())
+                .ToListAsync();
 
             // Check if there are any students in the class
-            if (studentsInClass == null) return null;
+            if (studentsInClass == null || !studentsInClass.Any()) return null;
 
+            return studentsInClass;
+        }
 
-            return await studentsInClass.ToListAsync();
+        Task<List<Student>> IClassRepository.GetStudentsByClassIdAsync(int classId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

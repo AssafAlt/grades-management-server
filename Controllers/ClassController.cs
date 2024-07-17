@@ -47,7 +47,7 @@ namespace api.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
             var results = await _classService.GetAllClassesByTeacherId(appUser.Id);
-            if (results.Data == null) return NotFound(results.Message);
+            //if (results.Data == null) return NotFound(results.Message);
             return StatusCode(results.StatusCode, results.Data);
         }
 
@@ -60,18 +60,26 @@ namespace api.Controllers
 
             var results = await _classService.CreateAsync(classDto, appUser.Id);
 
-            return StatusCode(results.StatusCode, results.Message);
+            return StatusCode(results.StatusCode, results.Data);
         }
 
         [HttpPut("{classId:int}/students/add")]
-        public async Task<IActionResult> AddStudent([FromRoute] int classId, [FromBody] AddStudentRequestDto requestDto)
+        public async Task<IActionResult> AddStudents([FromRoute] int classId, [FromBody] AddStudentsRequestDto requestDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var results = await _classService.AddStudentToClassAsync(classId, requestDto.StudentId);
+            var results = await _classService.AddStudentsToClassAsync(classId, requestDto.StudentsIds);
 
-            return StatusCode(results.StatusCode, results.Message);
+            return StatusCode(results.StatusCode, results.Data);
         }
+        /* public async Task<IActionResult> AddStudent([FromRoute] int classId, [FromBody] AddStudentRequestDto requestDto)
+         {
+             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+             var results = await _classService.AddStudentToClassAsync(classId, requestDto.StudentId);
+
+             return StatusCode(results.StatusCode, results.Message);
+         }*/
         [HttpDelete("{classId:int}/students/remove")]
         public async Task<IActionResult> RemoveStudent([FromRoute] int classId, [FromBody] RemoveStudentRequestDto requestDto)
         {

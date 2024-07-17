@@ -45,8 +45,8 @@ namespace api.Services
                     GroupId = classDto.GroupId
 
                 };
-                await _classRepo.CreateAsync(classModel);
-                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Class was created successfully" };
+                var newClassDto = await _classRepo.CreateAsync(classModel);
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Class was created successfully", Data = newClassDto };
             }
             catch (Exception ex)
             {
@@ -91,8 +91,8 @@ namespace api.Services
         {
             try
             {
-                await _classRepo.AddStudentsToClassAsync(classId, studentIds);
-                return new ServiceResult { StatusCode = StatusCodes.Status200OK, Message = "Students were added to the class!" };
+                var addedStudentsDto = await _classRepo.AddStudentsToClassAsync(classId, studentIds);
+                return new ServiceResult { StatusCode = StatusCodes.Status200OK, Message = "Students were added to the class!", Data = addedStudentsDto };
             }
             catch (Exception ex)
             {
@@ -123,7 +123,7 @@ namespace api.Services
             try
             {
                 var classes = await _classRepo.GetClassesByTeacherIdAsync(teacherId);
-                if (classes == null) return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "There are no classes" };
+                if (classes == null || !classes.Any()) return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "There are no classes" };
                 return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = classes };
             }
             catch (Exception ex)

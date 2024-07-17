@@ -28,8 +28,8 @@ namespace api.Services
             try
             {
                 var studentModel = studentDto.ToStudentFromCreate();
-                var newStudent = await _studentRepo.CreateAsync(studentModel);
-                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Student was created successfully", Data = newStudent.ToNewStudentDtoFromModel() };
+                var newStudentDto = await _studentRepo.CreateAsync(studentModel);
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Student was created successfully", Data = newStudentDto };
             }
             catch (Exception ex)
             {
@@ -61,7 +61,9 @@ namespace api.Services
                     return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "There are no students!" };
                 }
 
-                return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = students };
+                var studentsDto = students.Select(s => s.ToNewStudentDtoFromModel());
+
+                return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = studentsDto };
             }
             catch (Exception ex)
             {
@@ -88,20 +90,20 @@ namespace api.Services
             try
             {
                 var studentModels = studentDtos.Select(dto => dto.ToStudentFromCreate()).ToArray();
-                var newStudentsModels = await _studentRepo.CreateMultipleAsync(studentModels);
-                if (newStudentsModels.Length == 0) return new ServiceResult
+                var newStudentsDto = await _studentRepo.CreateMultipleAsync(studentModels);
+                if (newStudentsDto.Length == 0) return new ServiceResult
                 {
                     StatusCode = StatusCodes.Status409Conflict,
                     Message = "All students already exist."
                 };
-                else if (newStudentsModels.Length < studentModels.Length) return new ServiceResult
+                else if (newStudentsDto.Length < studentModels.Length) return new ServiceResult
                 {
                     StatusCode = StatusCodes.Status206PartialContent, // Partial content status code
                     Message = "Some students were created successfully.",
-                    Data = newStudentsModels
+                    Data = newStudentsDto
                 };
 
-                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Students were created successfully", Data = newStudentsModels };
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Students were created successfully", Data = newStudentsDto };
             }
             catch (Exception ex)
             {

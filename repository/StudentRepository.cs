@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.Student;
 using api.Interfaces.Repository;
+using api.Mappers;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,15 +21,15 @@ namespace api.repository
             _context = context;
         }
 
-        public async Task<Student> CreateAsync(Student studentModel)
+        public async Task<NewStudentDto> CreateAsync(Student studentModel)
         {
             await _context.Students.AddAsync(studentModel);
             await _context.SaveChangesAsync();
-            return studentModel;
+            return studentModel.ToNewStudentDtoFromModel();
 
         }
 
-        public async Task<Student[]> CreateMultipleAsync(Student[] studentModels)
+        public async Task<NewStudentDto[]> CreateMultipleAsync(Student[] studentModels)
         {
             // Get the IDs of students that already exist in the database
             var existingStudentIds = await _context.Students
@@ -42,10 +44,12 @@ namespace api.repository
             {
                 await _context.Students.AddRangeAsync(newStudents);
                 await _context.SaveChangesAsync();
+
             }
+            var newStudentsDto = newStudents.Select(s => s.ToNewStudentDtoFromModel()).ToArray();
 
             // Return the newly created students
-            return newStudents;
+            return newStudentsDto;
         }
 
         public async Task<int?> DeleteAsync(string studentId)
