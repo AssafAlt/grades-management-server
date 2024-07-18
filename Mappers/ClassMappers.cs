@@ -24,6 +24,17 @@ namespace api.Mappers
 
             };
         }
+        public static Class ToClassFromCreate(this CreateClassDto classDto, string teacherId)
+        {
+            return new Class
+            {
+                ClassName = classDto.ClassName.ToUpper(),
+                TeacherId = teacherId,
+                GroupId = classDto.GroupId
+
+
+            };
+        }
 
     }
 }

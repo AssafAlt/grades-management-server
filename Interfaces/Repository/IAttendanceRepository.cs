@@ -8,6 +8,6 @@ namespace api.Interfaces.Repository
 {
     public interface IAttendanceRepository
     {
-        public Task CreateAsync(Attendance attendance);
+        public Task CreateReportAsync(List<Attendance> attendances);
     }
 }

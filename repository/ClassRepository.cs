@@ -62,25 +62,6 @@ namespace api.repository
         }
 
 
-        /* public async Task AddStudentsToClassAsync(int classId, List<string> studentIds)
-         {
-             var classModel = await _context.Classes
-             .Include(c => c.Students)
-             .FirstOrDefaultAsync(c => c.ClassId == classId);
-
-             if (classModel == null) return;
-
-             var studentsToAdd = await _context.Students
-             .Where(s => studentIds.Contains(s.StudentId))
-             .ToListAsync();
-
-             foreach (var student in studentsToAdd)
-             {
-                 if (!classModel.Students.Any(s => s.StudentId == student.StudentId)) classModel.Students.Add(student);
-             }
-
-             await _context.SaveChangesAsync();
-         }*/
         public async Task<List<NewStudentDto>> AddStudentsToClassAsync(int classId, List<string> studentIds)
         {
             var classModel = await _context.Classes
@@ -118,47 +99,6 @@ namespace api.repository
 
         }
 
-        /*     public async Task<List<TeacherClassesDto>> GetClassesByTeacherIdAsync(string teacherId)
-             {
-                 var classDtos = await _context.Users
-         .Where(u => u.Id == teacherId)
-         .SelectMany(u => u.Classes)
-         .Select(c => new TeacherClassesDto
-         {
-             ClassId = c.ClassId,
-             ClassName = c.ClassName,
-             Students = c.Students.Select(s => new StudentDto
-             {
-                 StudentId = s.StudentId,
-                 FirstName = s.FirstName,
-                 LastName = s.LastName,
-                 PhoneNumber = s.PhoneNumber,
-                 Attendances = s.Attendances.Select(a => new AttendanceDto
-                 {
-                     Date = a.Date.ToString("MM-dd-yyyy"),
-                     IsPresent = a.IsPresent
-                 }).ToList(),
-                 Grades = s.Grades.Select(g => new GradeDto
-                 {
-                     Name = g.GradeItem.Name,
-                     Weight = g.GradeItem.Weight,
-                     Score = g.Score
-                 }).ToList()
-             }).ToList(),
-             GradeItems = c.GradeItems.Select(g => new GradeItemDto
-             {
-                 GradeItemId = g.GradeItemId,
-                 Name = g.Name,
-                 Weight = g.Weight
-             }).ToList()
-         }).ToListAsync();
-                 if (classDtos == null) return null;
-
-                 return classDtos;
-
-
-             }
-     */
         public async Task<List<NewClassDto>> GetClassesByTeacherIdAsync(string teacherId)
         {
             var classes = await _context.Users

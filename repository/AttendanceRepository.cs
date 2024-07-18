@@ -17,9 +17,9 @@ namespace api.repository
         {
             _context = context;
         }
-        public async Task CreateAsync(Attendance attendance)
+        public async Task CreateReportAsync(List<Attendance> attendances)
         {
-            await _context.Attendances.AddAsync(attendance);
+            await _context.Attendances.AddRangeAsync(attendances);
             await _context.SaveChangesAsync();
         }
     }

@@ -9,16 +9,16 @@ namespace api.Mappers
 {
     public static class AttendanceMappers
     {
-        public static Attendance ToAttendanceFromCreate(this CreateAttendanceDto attendanceDto)
+        public static List<Attendance> ToAttendancesFromCreate(this CreateAttendancesReportDto attendancesReportDto, int classId)
         {
-            return new Attendance
+            return attendancesReportDto.AttendanceDtos.Select(a => new Attendance
             {
-                StudentId = attendanceDto.StudentId,
-                ClassId = attendanceDto.ClassId,
-                Date = attendanceDto.Date.Date,
-                IsPresent = attendanceDto.IsPresent
+                StudentId = a.StudentId,
+                ClassId = classId,
+                Date = attendancesReportDto.Date,
+                IsPresent = a.IsPresent
+            }).ToList();
 
-            };
         }
 
     }

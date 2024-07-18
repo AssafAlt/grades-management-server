@@ -90,11 +90,10 @@ namespace api.Controllers
             return StatusCode(results.StatusCode, results.Message);
         }
         [HttpPost("{classId:int}/attendances")]
-        public async Task<IActionResult> AddAttendance([FromRoute] int classId, [FromBody] CreateAttendanceDto attendanceDto)
+        public async Task<IActionResult> AddAttendancesReport([FromRoute] int classId, [FromBody] CreateAttendancesReportDto attendancesReportDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            attendanceDto.ClassId = classId;
-            var results = await _classService.CreateAttendanceAsync(attendanceDto);
+            var results = await _classService.CreateAttendancesReportAsync(attendancesReportDto, classId);
             return StatusCode(results.StatusCode, results.Message);
 
         }
@@ -102,8 +101,7 @@ namespace api.Controllers
         public async Task<IActionResult> AddGradeItem([FromRoute] int classId, [FromBody] CreateGradeItemDto gradeItemDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            gradeItemDto.ClassId = classId;
-            var results = await _classService.CreateGradeItemAsync(gradeItemDto);
+            var results = await _classService.CreateGradeItemAsync(gradeItemDto, classId);
             return StatusCode(results.StatusCode, results.Message);
 
         }

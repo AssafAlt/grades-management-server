@@ -38,14 +38,18 @@ namespace api.Services
             try
             {
 
-                var classModel = new Class
+                var classModel = classDto.ToClassFromCreate(teacherId);
+
+                var newClassDto = await _classRepo.CreateAsync(classModel);
+                var newGradeItem = new GradeItem
                 {
-                    ClassName = classDto.ClassName,
-                    TeacherId = teacherId,
-                    GroupId = classDto.GroupId
+                    Name = "ATTENDANCES",
+                    Weight = 20 / 100m,
+                    ClassId = classModel.ClassId
 
                 };
-                var newClassDto = await _classRepo.CreateAsync(classModel);
+                await _gradeItemRepo.CreateAsync(newGradeItem);
+
                 return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Class was created successfully", Data = newClassDto };
             }
             catch (Exception ex)
@@ -134,12 +138,12 @@ namespace api.Services
         }
 
 
-        public async Task<ServiceResult> CreateAttendanceAsync(CreateAttendanceDto attendanceDto)
+        public async Task<ServiceResult> CreateAttendancesReportAsync(CreateAttendancesReportDto attendancesReportDto, int classId)
         {
             try
             {
-                await _attendanceRepo.CreateAsync(attendanceDto.ToAttendanceFromCreate());
-                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Attendance was created successfully" };
+                await _attendanceRepo.CreateReportAsync(attendancesReportDto.ToAttendancesFromCreate(classId));
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Attendances Report was created successfully" };
             }
             catch (Exception ex)
             {
@@ -148,11 +152,11 @@ namespace api.Services
             }
         }
 
-        public async Task<ServiceResult> CreateGradeItemAsync(CreateGradeItemDto gradeItemDto)
+        public async Task<ServiceResult> CreateGradeItemAsync(CreateGradeItemDto gradeItemDto, int classId)
         {
             try
             {
-                await _gradeItemRepo.CreateAsync(gradeItemDto.ToGradeItemFromCreate());
+                await _gradeItemRepo.CreateAsync(gradeItemDto.ToGradeItemFromCreate(classId));
                 return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "GradeItem was created successfully" };
             }
             catch (Exception ex)
@@ -160,6 +164,11 @@ namespace api.Services
 
                 return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
             }
+        }
+
+        public Task<ServiceResult> CreateAttendancesReportAsync(CreateAttendanceDto attendanceDto, int classId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -9,13 +9,13 @@ namespace api.Mappers
 {
     public static class GradeItemMappers
     {
-        public static GradeItem ToGradeItemFromCreate(this CreateGradeItemDto gradeItemDto)
+        public static GradeItem ToGradeItemFromCreate(this CreateGradeItemDto gradeItemDto, int classId)
         {
             return new GradeItem
             {
-                Name = gradeItemDto.Name,
+                Name = gradeItemDto.Name.ToUpper(),
                 Weight = gradeItemDto.Weight / 100m,
-                ClassId = gradeItemDto.ClassId
+                ClassId = classId
             };
         }
     }

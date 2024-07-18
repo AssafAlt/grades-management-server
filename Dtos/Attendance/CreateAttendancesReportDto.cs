@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace api.Dtos.GradeItem
+namespace api.Dtos.Attendance
 {
-    public class CreateGradeItemDto
+    public class CreateAttendancesReportDto
     {
         [Required]
-        public string Name { get; set; }
+        public List<CreateAttendanceDto> AttendanceDtos { get; set; }
         [Required]
-        [Range(1, 100)]
-        public int Weight { get; set; }
+        public DateTime Date { get; set; }
 
     }
+
 }

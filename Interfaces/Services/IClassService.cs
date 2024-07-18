@@ -18,7 +18,8 @@ namespace api.Interfaces.Services
         public Task<ServiceResult> AddStudentsToClassAsync(int classId, List<string> studentIds);
         public Task<ServiceResult> GetStudentsByClassIdAsync(int classId);
         public Task<ServiceResult> GetAllClassesByTeacherId(string teacherId);
-        public Task<ServiceResult> CreateAttendanceAsync(CreateAttendanceDto attendanceDto);
-        public Task<ServiceResult> CreateGradeItemAsync(CreateGradeItemDto gradeItemDto);
+        public Task<ServiceResult> CreateAttendancesReportAsync(CreateAttendancesReportDto attendancesReportDto, int classId);
+
+        public Task<ServiceResult> CreateGradeItemAsync(CreateGradeItemDto gradeItemDto, int classId);
     }
 }
