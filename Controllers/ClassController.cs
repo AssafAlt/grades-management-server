@@ -62,6 +62,14 @@ namespace api.Controllers
 
             return StatusCode(results.StatusCode, results.Data);
         }
+        [HttpDelete("{classId:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int classId)
+        {
+
+            var results = await _classService.DeleteAsync(classId);
+
+            return StatusCode(results.StatusCode, results.Message);
+        }
 
         [HttpPut("{classId:int}/students/add")]
         public async Task<IActionResult> AddStudents([FromRoute] int classId, [FromBody] AddStudentsRequestDto requestDto)
@@ -72,14 +80,7 @@ namespace api.Controllers
 
             return StatusCode(results.StatusCode, results.Data);
         }
-        /* public async Task<IActionResult> AddStudent([FromRoute] int classId, [FromBody] AddStudentRequestDto requestDto)
-         {
-             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-             var results = await _classService.AddStudentToClassAsync(classId, requestDto.StudentId);
-
-             return StatusCode(results.StatusCode, results.Message);
-         }*/
         [HttpDelete("{classId:int}/students/remove")]
         public async Task<IActionResult> RemoveStudent([FromRoute] int classId, [FromBody] RemoveStudentRequestDto requestDto)
         {
@@ -96,6 +97,16 @@ namespace api.Controllers
             var results = await _classService.CreateAttendancesReportAsync(attendancesReportDto, classId);
             return StatusCode(results.StatusCode, results.Message);
 
+        }
+        [HttpGet("{classId:int}/attendances-report")]
+        public async Task<IActionResult> RemoveStudent([FromRoute] int classId)
+        {
+            var results = await _classService.GetAttendanceReportByClassIdAsync(classId);
+            if (results.Data == null)
+            {
+                return StatusCode(results.StatusCode, results.Message);
+            }
+            return StatusCode(results.StatusCode, results.Data);
         }
         [HttpPost("{classId}/gradeitems")]
         public async Task<IActionResult> AddGradeItem([FromRoute] int classId, [FromBody] CreateGradeItemDto gradeItemDto)

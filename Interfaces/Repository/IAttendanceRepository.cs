@@ -9,5 +9,6 @@ namespace api.Interfaces.Repository
     public interface IAttendanceRepository
     {
         public Task CreateReportAsync(List<Attendance> attendances);
+        public Task<List<Attendance>> GetAttendancesByClassIdAsync(int classId);
     }
 }

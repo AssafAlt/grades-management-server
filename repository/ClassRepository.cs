@@ -127,5 +127,18 @@ namespace api.repository
         {
             throw new NotImplementedException();
         }
+
+        public async Task<int?> DeleteAsync(int classId)
+        {
+            var classModel = await _context.Classes.FirstOrDefaultAsync(x => x.ClassId == classId);
+
+            if (classModel == null) return null;
+
+
+            _context.Classes.Remove(classModel);
+            await _context.SaveChangesAsync();
+
+            return 1;
+        }
     }
 }

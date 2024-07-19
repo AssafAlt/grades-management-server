@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using api.Data;
 using api.Interfaces.Repository;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.repository
 {
@@ -22,5 +23,15 @@ namespace api.repository
             await _context.Attendances.AddRangeAsync(attendances);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Attendance>> GetAttendancesByClassIdAsync(int classId)
+        {
+            return await _context.Attendances
+                .Include(a => a.Student)
+                .Include(a => a.Class)
+                .Where(a => a.ClassId == classId)
+                .ToListAsync();
+        }
+
     }
 }

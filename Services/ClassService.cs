@@ -170,6 +170,72 @@ namespace api.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<ServiceResult> DeleteAsync(int classId)
+        {
+            try
+            {
+                var result = await _classRepo.DeleteAsync(classId);
+                if (result == null) return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "There are no class!" };
+                return new ServiceResult { StatusCode = StatusCodes.Status204NoContent, Message = "Class was deleted successfully!" };
+            }
+            catch (Exception ex)
+            {
+
+                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+            }
+        }
+
+        public async Task<ServiceResult> GetAttendanceReportByClassIdAsync(int classId)
+        {
+            try
+            {
+                var attendances = await _attendanceRepo.GetAttendancesByClassIdAsync(classId);
+
+                if (attendances == null || !attendances.Any())
+                {
+                    return new ServiceResult
+                    {
+                        StatusCode = StatusCodes.Status404NotFound,
+                        Message = "No attendance records found for the specified class ID."
+                    };
+                }
+
+                var report = new Dictionary<string, AttendanceReportDto>();
+
+                foreach (var attendance in attendances)
+                {
+                    if (!report.ContainsKey(attendance.StudentId))
+                    {
+                        report[attendance.StudentId] = new AttendanceReportDto
+                        {
+                            StudentId = attendance.StudentId,
+                            FirstName = attendance.Student.FirstName,
+                            LastName = attendance.Student.LastName
+                        };
+                    }
+
+                    report[attendance.StudentId].AttendanceDates[attendance.Date] = attendance.IsPresent ? "V" : "X";
+                }
+
+                foreach (var studentReport in report.Values)
+                {
+                    studentReport.TotalAttendances = studentReport.AttendanceDates.Count(d => d.Value == "V");
+                }
+
+                return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = report.Values.ToList() };
+
+            }
+            catch (Exception ex)
+            {
+
+                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+            }
+
+
+
+        }
+
     }
 }
 

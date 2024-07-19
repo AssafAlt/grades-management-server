@@ -14,7 +14,7 @@ namespace api.Interfaces.Repository
         public Task RemoveStudentFromClassAsync(int classId, string studentId);
         public Task<List<NewStudentDto>> AddStudentsToClassAsync(int classId, List<string> studentIds);
         public Task<NewClassDto> CreateAsync(Class classModel);
-        //public Task<List<TeacherClassesDto>> GetClassesByTeacherIdAsync(string teacherId);
+        public Task<int?> DeleteAsync(int classId);
         public Task<List<NewClassDto>> GetClassesByTeacherIdAsync(string teacherId);
         public Task<List<Student>> GetStudentsByClassIdAsync(int classId);
     }
