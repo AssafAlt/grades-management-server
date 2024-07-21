@@ -24,5 +24,9 @@ namespace api.Interfaces.Services
         public Task<ServiceResult> GetAttendanceReportByClassIdAsync(int classId);
 
         public Task<ServiceResult> CreateGradeItemAsync(CreateGradeItemDto gradeItemDto, int classId);
+        public Task<ServiceResult> RemoveGradeItemFromClassAsync(int gradeItemId);
+
+        public Task<ServiceResult> UpdateGradeItemSOfClassAsync(int classId, UpdateGradeItemsDto updateGradeItemsDto);
+
     }
 }

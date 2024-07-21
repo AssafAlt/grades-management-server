@@ -156,8 +156,9 @@ namespace api.Services
         {
             try
             {
-                await _gradeItemRepo.CreateAsync(gradeItemDto.ToGradeItemFromCreate(classId));
-                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "GradeItem was created successfully" };
+                var res = await _gradeItemRepo.CreateAsync(gradeItemDto.ToGradeItemFromCreate(classId));
+                if (res == null) return new ServiceResult { StatusCode = StatusCodes.Status400BadRequest, Message = "Grade Items weight is exceeding 100%" };
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "GradeItem was created successfully", Data = res };
             }
             catch (Exception ex)
             {
@@ -221,6 +222,7 @@ namespace api.Services
                 foreach (var studentReport in report.Values)
                 {
                     studentReport.TotalAttendances = studentReport.AttendanceDates.Count(d => d.Value == "V");
+                    studentReport.TotalLectures = studentReport.AttendanceDates.Count();
                 }
 
                 return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = report.Values.ToList() };
@@ -236,6 +238,39 @@ namespace api.Services
 
         }
 
+        public async Task<ServiceResult> RemoveGradeItemFromClassAsync(int gradeItemId)
+        {
+            try
+            {
+
+                var res = await _gradeItemRepo.DeleteAsync(gradeItemId);
+                if (res == null) return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "Grade Item wasn't found" };
+
+                return new ServiceResult { StatusCode = StatusCodes.Status204NoContent, Message = "Grade Item was removed from the class!" };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+            }
+        }
+
+        public async Task<ServiceResult> UpdateGradeItemSOfClassAsync(int classId, UpdateGradeItemsDto updateGradeItemsDto)
+        {
+            try
+            {
+                var res = await _gradeItemRepo.UpdateAsync(updateGradeItemsDto);
+
+
+                if (res == null) return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "Grade Items weren't found" };
+                if (res == -1) return new ServiceResult { StatusCode = StatusCodes.Status400BadRequest, Message = "Grade Items weight is exceeding 100%" };
+
+                return new ServiceResult { StatusCode = StatusCodes.Status200OK, Message = "Grade Items were updated!" };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+            }
+        }
     }
 }
 

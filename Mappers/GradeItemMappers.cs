@@ -18,5 +18,16 @@ namespace api.Mappers
                 ClassId = classId
             };
         }
+
+        public static GradeItemDto ToGradeItemDtoFromModel(this GradeItem gradeItemModel)
+        {
+            return new GradeItemDto
+            {
+                GradeItemId = gradeItemModel.GradeItemId,
+                Name = gradeItemModel.Name.ToUpper(),
+                Weight = gradeItemModel.Weight
+
+            };
+        }
     }
 }

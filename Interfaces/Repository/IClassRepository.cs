@@ -17,5 +17,7 @@ namespace api.Interfaces.Repository
         public Task<int?> DeleteAsync(int classId);
         public Task<List<NewClassDto>> GetClassesByTeacherIdAsync(string teacherId);
         public Task<List<Student>> GetStudentsByClassIdAsync(int classId);
+
+        // public Task RemoveGradeItemFromClassAsync(int gradeItemId);
     }
 }

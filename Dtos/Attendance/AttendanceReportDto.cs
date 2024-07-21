@@ -12,5 +12,6 @@ namespace api.Dtos.Attendance
         public string LastName { get; set; }
         public Dictionary<DateTime, string> AttendanceDates { get; set; } = new Dictionary<DateTime, string>();
         public int TotalAttendances { get; set; }
+        public int TotalLectures { get; set; }
     }
 }

@@ -108,11 +108,28 @@ namespace api.Controllers
             }
             return StatusCode(results.StatusCode, results.Data);
         }
-        [HttpPost("{classId}/gradeitems")]
+        [HttpPost("{classId}/grade-items")]
         public async Task<IActionResult> AddGradeItem([FromRoute] int classId, [FromBody] CreateGradeItemDto gradeItemDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var results = await _classService.CreateGradeItemAsync(gradeItemDto, classId);
+            if (results.Data == null) return StatusCode(results.StatusCode, results.Message);
+            return StatusCode(results.StatusCode, results.Data);
+
+        }
+        [HttpDelete("grade-items/{gradeItemId:int}")]
+        public async Task<IActionResult> DeleteGradeItem([FromRoute] int gradeItemId)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var results = await _classService.RemoveGradeItemFromClassAsync(gradeItemId);
+            return StatusCode(results.StatusCode, results.Message);
+
+        }
+        [HttpPut("{classId}/grade-items")]
+        public async Task<IActionResult> UpdateGradeItems([FromRoute] int classId, [FromBody] UpdateGradeItemsDto gradeItemDto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var results = await _classService.UpdateGradeItemSOfClassAsync(classId, gradeItemDto);
             return StatusCode(results.StatusCode, results.Message);
 
         }

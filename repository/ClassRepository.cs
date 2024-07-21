@@ -105,6 +105,7 @@ namespace api.repository
             .Where(u => u.Id == teacherId)
             .SelectMany(u => u.Classes)
             .Include(c => c.Students)
+            .Include(c => c.GradeItems)
             .ToListAsync();
             var classDtos = classes.Select(c => c.ToNewClassDtoFromModel(c.Students?.Count() ?? 0)).ToList();
 
@@ -140,5 +141,24 @@ namespace api.repository
 
             return 1;
         }
+
+        /* public async Task RemoveGradeItemFromClassAsync(int classId, int gradeItemId)
+         {
+             var classModel = await _context.Classes
+                 .Include(c => c.GradeItems)
+                 .FirstOrDefaultAsync(c => c.ClassId == classId);
+
+             var gradeItem = await _context.GradeItems.FindAsync(gradeItemId);
+
+             if (classModel == null || gradeItem == null) return;
+
+             if (classModel.GradeItems.Any(s => s.GradeItemId == gradeItemId))
+             {
+                 classModel.GradeItems.Remove(gradeItem);
+
+                 await _context.SaveChangesAsync();
+             }
+         }*/
+
     }
 }
