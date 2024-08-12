@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace api.Dtos.Grade
 {
-    public class CreateGradeDto
+    public class CreateGradesReportDto
     {
-
-
         [Required]
-        public int GradeItemId { get; set; }
-        [Required]
-        [Range(0, 100)]
-        public double Score { get; set; }
+        public Dictionary<string, CreateGradeDto[]> Grades { get; set; }
+
     }
 }

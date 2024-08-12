@@ -13,6 +13,7 @@ using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 
 
 namespace api.Services
@@ -55,7 +56,8 @@ namespace api.Services
             catch (Exception ex)
             {
 
-                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+
+                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.InnerException.Message };
             }
 
         }

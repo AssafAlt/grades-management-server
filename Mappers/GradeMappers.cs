@@ -9,11 +9,11 @@ namespace api.Mappers
 {
     public static class GradeMappers
     {
-        public static Grade ToGradeFromCreate(this CreateGradeDto gradeDto)
+        public static Grade ToGradeFromCreate(this CreateGradeDto gradeDto, string studentId)
         {
             return new Grade
             {
-                StudentId = gradeDto.StudentId,
+                StudentId = studentId,
                 GradeItemId = gradeDto.GradeItemId,
                 Score = gradeDto.Score
             };

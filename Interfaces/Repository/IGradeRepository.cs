@@ -9,5 +9,6 @@ namespace api.Interfaces.Repository
     public interface IGradeRepository
     {
         public Task CreateAsync(Grade grade);
+        public Task CreateMultipleAsync(List<Grade> grades);
     }
 }

@@ -23,5 +23,11 @@ namespace api.repository
             await _context.SaveChangesAsync();
 
         }
+
+        public async Task CreateMultipleAsync(List<Grade> grades)
+        {
+            await _context.Grades.AddRangeAsync(grades);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -16,11 +16,13 @@ namespace api.Services
     {
         private readonly IStudentRepository _studentRepo;
         private readonly IGradeRepository _gradeRepo;
+        private readonly ILogger<StudentService> _logger;
 
-        public StudentService(IStudentRepository studentRepo, IGradeRepository gradeRepo)
+        public StudentService(IStudentRepository studentRepo, IGradeRepository gradeRepo, ILogger<StudentService> logger)
         {
             _studentRepo = studentRepo;
             _gradeRepo = gradeRepo;
+            _logger = logger;
 
         }
         public async Task<ServiceResult> CreateAsync(CreateStudentDto studentDto)
@@ -37,11 +39,11 @@ namespace api.Services
                 return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
             }
         }
-        public async Task<ServiceResult> CreateGradeAsync(CreateGradeDto gradeDto)
+        public async Task<ServiceResult> CreateGradeAsync(CreateGradeDto gradeDto, string studentId)
         {
             try
             {
-                await _gradeRepo.CreateAsync(gradeDto.ToGradeFromCreate());
+                await _gradeRepo.CreateAsync(gradeDto.ToGradeFromCreate(studentId));
                 return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Student was created successfully" };
             }
             catch (Exception ex)
@@ -108,6 +110,34 @@ namespace api.Services
             catch (Exception ex)
             {
                 return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+            }
+        }
+
+        public async Task<ServiceResult> CreateGradesAsync(CreateGradesReportDto gradesDto)
+        {
+            try
+            {
+                _logger.LogInformation("Received Grades DTO: {@GradesDto}", gradesDto);
+                var gradesList = new List<Grade>();
+                foreach (var keyValuePair in gradesDto.Grades)
+                {
+                    string key = keyValuePair.Key;
+                    CreateGradeDto[] gradesValues = keyValuePair.Value;
+                    foreach (var grade in gradesValues)
+                    {
+                        Grade gradeModel = grade.ToGradeFromCreate(key);
+                        gradesList.Add(gradeModel);
+                    }
+                }
+
+                await _gradeRepo.CreateMultipleAsync(gradesList);
+                _logger.LogInformation("Grades created successfully for {Count} students.", gradesList.Count);
+                return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Grades were added successfully" };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating grades.");
+                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = "An error occurred while creating grades." };
             }
         }
     }

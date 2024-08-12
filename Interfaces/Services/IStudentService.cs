@@ -15,6 +15,7 @@ namespace api.Interfaces.Services
         public Task<ServiceResult> CreateMultipleAsync(CreateStudentDto[] studentDtos);
         public Task<ServiceResult> GetAllAsync();
         public Task<ServiceResult> DeleteAsync(string studentId);
-        public Task<ServiceResult> CreateGradeAsync(CreateGradeDto gradeDto);
+        public Task<ServiceResult> CreateGradeAsync(CreateGradeDto gradeDto, string studentId);
+        public Task<ServiceResult> CreateGradesAsync(CreateGradesReportDto gradesDto);
     }
 }

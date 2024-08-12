@@ -55,9 +55,23 @@ namespace api.Controllers
         {
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            gradeDto.StudentId = studentId;
 
-            var results = await _studentService.CreateGradeAsync(gradeDto);
+
+            var results = await _studentService.CreateGradeAsync(gradeDto, studentId);
+
+            return StatusCode(results.StatusCode, results.Message);
+
+
+        }
+        [HttpPost("grades")]
+        public async Task<IActionResult> CreateGrades([FromBody] CreateGradesReportDto gradesDto)
+        {
+
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+
+            var results = await _studentService.CreateGradesAsync(gradesDto);
 
             return StatusCode(results.StatusCode, results.Message);
 
