@@ -21,6 +21,7 @@ namespace api.Data
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<GradeItem> GradeItems { get; set; }
         public DbSet<Grade> Grades { get; set; }
+        public DbSet<FinalGrade> FinalGrades { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -50,6 +51,12 @@ namespace api.Data
                 .HasOne(c => c.Teacher)
                 .WithMany(u => u.Classes)
                 .HasForeignKey(c => c.TeacherId);
+
+            builder.Entity<Class>()
+                .HasOne(c => c.FinalGrade)
+                .WithOne(fg => fg.Class)
+                .HasForeignKey<FinalGrade>(fg => fg.ClassId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             // Student and Class: Many-to-Many

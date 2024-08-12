@@ -23,6 +23,8 @@ namespace api.Models
         public ICollection<Student> Students { get; set; }
         public ICollection<Attendance> Attendances { get; set; }
         public ICollection<GradeItem> GradeItems { get; set; }
+        // One-to-One relationship with FinalGrade
+        public FinalGrade FinalGrade { get; set; }
 
 
     }
