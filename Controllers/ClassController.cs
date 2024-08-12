@@ -133,6 +133,14 @@ namespace api.Controllers
             return StatusCode(results.StatusCode, results.Message);
 
         }
+        [HttpGet("{classId}/final-grades")]
+        public async Task<IActionResult> GetFinalGrades([FromRoute] int classId)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var results = await _classService.GetFinalGradesByClassId(classId);
+            return StatusCode(results.StatusCode, results.Data);
+
+        }
 
     }
 }

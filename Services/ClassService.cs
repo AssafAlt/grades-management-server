@@ -24,13 +24,15 @@ namespace api.Services
         private readonly IClassRepository _classRepo;
         private readonly IAttendanceRepository _attendanceRepo;
         private readonly IGradeItemRepository _gradeItemRepo;
+        private readonly IGradeRepository _gradeRepo;
 
 
-        public ClassService(IClassRepository classRepo, IAttendanceRepository attendanceRepo, IGradeItemRepository gradeItemRepo)
+        public ClassService(IClassRepository classRepo, IAttendanceRepository attendanceRepo, IGradeItemRepository gradeItemRepo, IGradeRepository gradeRepo)
         {
             _classRepo = classRepo;
             _attendanceRepo = attendanceRepo;
             _gradeItemRepo = gradeItemRepo;
+            _gradeRepo = gradeRepo;
 
         }
 
@@ -267,6 +269,19 @@ namespace api.Services
                 if (res == -1) return new ServiceResult { StatusCode = StatusCodes.Status400BadRequest, Message = "Grade Items weight is exceeding 100%" };
 
                 return new ServiceResult { StatusCode = StatusCodes.Status200OK, Message = "Grade Items were updated!" };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+            }
+        }
+
+        public async Task<ServiceResult> GetFinalGradesByClassId(int classId)
+        {
+            try
+            {
+                var res = await _gradeRepo.GetFinalGradesByClassId(classId);
+                return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = res };
             }
             catch (Exception ex)
             {

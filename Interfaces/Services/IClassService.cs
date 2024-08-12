@@ -27,6 +27,7 @@ namespace api.Interfaces.Services
         public Task<ServiceResult> RemoveGradeItemFromClassAsync(int gradeItemId);
 
         public Task<ServiceResult> UpdateGradeItemSOfClassAsync(int classId, UpdateGradeItemsDto updateGradeItemsDto);
+        public Task<ServiceResult> GetFinalGradesByClassId(int classId);
 
     }
 }
