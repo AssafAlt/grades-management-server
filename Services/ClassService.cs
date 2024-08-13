@@ -171,10 +171,7 @@ namespace api.Services
             }
         }
 
-        public Task<ServiceResult> CreateAttendancesReportAsync(CreateAttendanceDto attendanceDto, int classId)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public async Task<ServiceResult> DeleteAsync(int classId)
         {
@@ -281,6 +278,7 @@ namespace api.Services
             try
             {
                 var res = await _gradeRepo.GetFinalGradesByClassId(classId);
+                if (res == null) return new ServiceResult { StatusCode = StatusCodes.Status400BadRequest, Message = "not all of the grades are filled!" };
                 return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = res };
             }
             catch (Exception ex)

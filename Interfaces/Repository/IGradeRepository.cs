@@ -13,6 +13,6 @@ namespace api.Interfaces.Repository
         public Task CreateMultipleAsync(List<Grade> grades);
         public Task<FinalGradeDto> GetFinalGradesByClassId(int classId);
 
-        public Task SaveFinalGrade(FinalGradeDto finalGradeDto);
+        public Task SaveFinalGrade(FinalGradeDto finalGradeDto, int classId);
     }
 }

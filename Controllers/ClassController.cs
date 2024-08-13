@@ -138,6 +138,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var results = await _classService.GetFinalGradesByClassId(classId);
+            if (results.Data == null) return StatusCode(results.StatusCode, results.Message);
             return StatusCode(results.StatusCode, results.Data);
 
         }
