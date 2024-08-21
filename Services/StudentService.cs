@@ -9,6 +9,8 @@ using api.Interfaces.Repository;
 using api.Interfaces.Services;
 using api.Mappers;
 using api.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
@@ -33,10 +35,18 @@ namespace api.Services
                 var newStudentDto = await _studentRepo.CreateAsync(studentModel);
                 return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Student was created successfully", Data = newStudentDto };
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbEx)
             {
 
-                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+                var sqlException = dbEx.InnerException as SqlException;
+                var dbErrorMessage = sqlException?.Message ?? "A database error occurred.";
+
+                return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = dbErrorMessage,
+                    Data = null
+                };
             }
         }
         public async Task<ServiceResult> CreateGradeAsync(CreateGradeDto gradeDto, string studentId)
@@ -46,10 +56,18 @@ namespace api.Services
                 await _gradeRepo.CreateAsync(gradeDto.ToGradeFromCreate(studentId));
                 return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Student was created successfully" };
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbEx)
             {
 
-                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+                var sqlException = dbEx.InnerException as SqlException;
+                var dbErrorMessage = sqlException?.Message ?? "A database error occurred.";
+
+                return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = dbErrorMessage,
+                    Data = null
+                };
             }
         }
         public async Task<ServiceResult> GetAllAsync()
@@ -67,9 +85,18 @@ namespace api.Services
 
                 return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = studentsDto };
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbEx)
             {
-                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+
+                var sqlException = dbEx.InnerException as SqlException;
+                var dbErrorMessage = sqlException?.Message ?? "A database error occurred.";
+
+                return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = dbErrorMessage,
+                    Data = null
+                };
             }
         }
         public async Task<ServiceResult> DeleteAsync(string studentId)
@@ -80,10 +107,18 @@ namespace api.Services
                 if (result == null) return new ServiceResult { StatusCode = StatusCodes.Status404NotFound, Message = "There are no student!" };
                 return new ServiceResult { StatusCode = StatusCodes.Status204NoContent, Message = "Student was deleted successfully!" };
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbEx)
             {
 
-                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+                var sqlException = dbEx.InnerException as SqlException;
+                var dbErrorMessage = sqlException?.Message ?? "A database error occurred.";
+
+                return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = dbErrorMessage,
+                    Data = null
+                };
             }
         }
 
@@ -107,9 +142,18 @@ namespace api.Services
 
                 return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Students were created successfully", Data = newStudentsDto };
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbEx)
             {
-                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = ex.Message };
+
+                var sqlException = dbEx.InnerException as SqlException;
+                var dbErrorMessage = sqlException?.Message ?? "A database error occurred.";
+
+                return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = dbErrorMessage,
+                    Data = null
+                };
             }
         }
 
@@ -134,10 +178,18 @@ namespace api.Services
                 _logger.LogInformation("Grades created successfully for {Count} students.", gradesList.Count);
                 return new ServiceResult { StatusCode = StatusCodes.Status201Created, Message = "Grades were added successfully" };
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbEx)
             {
-                _logger.LogError(ex, "An error occurred while creating grades.");
-                return new ServiceResult { StatusCode = StatusCodes.Status500InternalServerError, Message = "An error occurred while creating grades." };
+
+                var sqlException = dbEx.InnerException as SqlException;
+                var dbErrorMessage = sqlException?.Message ?? "A database error occurred.";
+
+                return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = dbErrorMessage,
+                    Data = null
+                };
             }
         }
     }

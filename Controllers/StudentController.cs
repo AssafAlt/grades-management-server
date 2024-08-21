@@ -33,6 +33,7 @@ namespace api.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var results = await _studentService.CreateAsync(studentDto);
+            if (results.Data == null) return StatusCode(results.StatusCode, results.Message);
 
             return StatusCode(results.StatusCode, results.Data);
 
@@ -45,6 +46,7 @@ namespace api.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var results = await _studentService.CreateMultipleAsync(studentDtos);
+            if (results.Data == null) return StatusCode(results.StatusCode, results.Message);
 
             return StatusCode(results.StatusCode, results.Data);
 

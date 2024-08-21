@@ -28,6 +28,7 @@ namespace api.Interfaces.Services
 
         public Task<ServiceResult> UpdateGradeItemSOfClassAsync(int classId, UpdateGradeItemsDto updateGradeItemsDto);
         public Task<ServiceResult> GetFinalGradesByClassId(int classId);
+        public Task<ServiceResult> GetGradesByClassId(int classId);
 
     }
 }

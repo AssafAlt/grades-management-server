@@ -47,7 +47,7 @@ namespace api.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
             var results = await _classService.GetAllClassesByTeacherId(appUser.Id);
-            //if (results.Data == null) return NotFound(results.Message);
+            if (results.Data == null) return NotFound(results.Message);
             return StatusCode(results.StatusCode, results.Data);
         }
 
@@ -59,6 +59,7 @@ namespace api.Controllers
             var appUser = await _userManager.FindByNameAsync(username);
 
             var results = await _classService.CreateAsync(classDto, appUser.Id);
+            if (results.Data == null) return StatusCode(results.StatusCode, results.Message);
 
             return StatusCode(results.StatusCode, results.Data);
         }
@@ -77,6 +78,7 @@ namespace api.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var results = await _classService.AddStudentsToClassAsync(classId, requestDto.StudentsIds);
+            if (results.Data == null) return StatusCode(results.StatusCode, results.Message);
 
             return StatusCode(results.StatusCode, results.Data);
         }
@@ -138,6 +140,15 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var results = await _classService.GetFinalGradesByClassId(classId);
+            if (results.Data == null) return StatusCode(results.StatusCode, results.Message);
+            return StatusCode(results.StatusCode, results.Data);
+
+        }
+        [HttpGet("{classId}/grades")]
+        public async Task<IActionResult> GetGrades([FromRoute] int classId)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var results = await _classService.GetGradesByClassId(classId);
             if (results.Data == null) return StatusCode(results.StatusCode, results.Message);
             return StatusCode(results.StatusCode, results.Data);
 
