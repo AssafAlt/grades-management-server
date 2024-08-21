@@ -66,7 +66,7 @@ namespace api.repository
 
             var classEntity = await _context.Classes
                             .Include(c => c.Students)
-                            .ThenInclude(s => s.Grades)
+                             .ThenInclude(s => s.Grades.Where(g => g.GradeItem.ClassId == classId))
                             .ThenInclude(g => g.GradeItem)
                             .Include(c => c.GradeItems) // Include GradeItems to check for missing grades
                             .Include(c => c.Attendances) // Include Attendances to calculate them
@@ -79,6 +79,10 @@ namespace api.repository
             var requiredGradeItems = classEntity.GradeItems
                 .Where(gi => gi.Name != "ATTENDANCES")
                 .ToList();
+            if (!requiredGradeItems.Any())
+            {
+                return null;
+            }
 
             foreach (var student in classEntity.Students)
             {
@@ -175,7 +179,7 @@ namespace api.repository
             // Fetch the class entity along with students, their grades, and grade items
             var classEntity = await _context.Classes
                             .Include(c => c.Students)
-                            .ThenInclude(s => s.Grades)
+                             .ThenInclude(s => s.Grades.Where(g => g.GradeItem.ClassId == classId))
                             .ThenInclude(g => g.GradeItem)
                             .Include(c => c.GradeItems) // Include GradeItems to check for missing grades
                             .Include(c => c.Attendances) // Include Attendances to calculate them
