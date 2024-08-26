@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Models
 {
     [Table("Grades")]
+    [Index(nameof(StudentId), nameof(GradeItemId), IsUnique = true)]
     public class Grade
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -101,7 +101,7 @@ namespace api.Controllers
 
         }
         [HttpGet("{classId:int}/attendances-report")]
-        public async Task<IActionResult> RemoveStudent([FromRoute] int classId)
+        public async Task<IActionResult> GetAttendancesReport([FromRoute] int classId)
         {
             var results = await _classService.GetAttendanceReportByClassIdAsync(classId);
             if (results.Data == null)
