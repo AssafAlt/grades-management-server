@@ -31,7 +31,47 @@ namespace api.repository
 
         public async Task CreateMultipleAsync(List<Grade> grades)
         {
-            await _context.Grades.AddRangeAsync(grades);
+            var studentIds = grades.Select(g => g.StudentId).Distinct().ToList();
+            var gradeItemIds = grades.Select(g => g.GradeItemId).Distinct().ToList();
+
+            // Fetch existing grades that match the incoming grades
+            var existingGrades = await _context.Grades
+                .Where(g => studentIds.Contains(g.StudentId) && gradeItemIds.Contains(g.GradeItemId))
+                .ToListAsync();
+
+            var existingGradeDict = existingGrades.ToDictionary(g => (g.StudentId, g.GradeItemId));
+
+            // Separate grades into those that need updating and those that need inserting
+            var gradesToUpdate = new List<Grade>();
+            var gradesToAdd = new List<Grade>();
+
+            foreach (var grade in grades)
+            {
+                if (existingGradeDict.ContainsKey((grade.StudentId, grade.GradeItemId)))
+                {
+                    // Update existing grade
+                    var existingGrade = existingGradeDict[(grade.StudentId, grade.GradeItemId)];
+                    existingGrade.Score = grade.Score; // Update other fields if necessary
+                    gradesToUpdate.Add(existingGrade);
+                }
+                else
+                {
+                    // Add new grade
+                    gradesToAdd.Add(grade);
+                }
+            }
+
+            // Perform updates and inserts
+            if (gradesToUpdate.Any())
+            {
+                _context.Grades.UpdateRange(gradesToUpdate);
+            }
+
+            if (gradesToAdd.Any())
+            {
+                await _context.Grades.AddRangeAsync(gradesToAdd);
+            }
+
             await _context.SaveChangesAsync();
         }
 
@@ -73,7 +113,15 @@ namespace api.repository
                             .FirstOrDefaultAsync(c => c.ClassId == classId);
 
             if (classEntity == null)
+            {
                 throw new Exception("Class not found");
+            }
+            // Validate that the total weight of grade items is exactly 1
+            var totalWeight = classEntity.GradeItems.Sum(gi => gi.Weight);
+            if (totalWeight != 1)
+            {
+                throw new Exception("The total weight of grade items must be exactly 1.");
+            }
 
             // Ensure required grade items are present
             var requiredGradeItems = classEntity.GradeItems
@@ -174,13 +222,13 @@ namespace api.repository
 
 
         }
-        public async Task<FinalGradeDto> GetGradesByClassId(int classId)
+        public async Task<FinalGradeDto?> GetGradesByClassId(int classId)
         {
             // Fetch the class entity along with students, their grades, and grade items
             var classEntity = await _context.Classes
                             .Include(c => c.Students)
-                             .ThenInclude(s => s.Grades.Where(g => g.GradeItem.ClassId == classId))
-                            .ThenInclude(g => g.GradeItem)
+                                .ThenInclude(s => s.Grades.Where(g => g.GradeItem.ClassId == classId))
+                                .ThenInclude(g => g.GradeItem)
                             .Include(c => c.GradeItems) // Include GradeItems to check for missing grades
                             .Include(c => c.Attendances) // Include Attendances to calculate them
                             .FirstOrDefaultAsync(c => c.ClassId == classId);
@@ -194,6 +242,8 @@ namespace api.repository
                 ClassName = classEntity.ClassName + " " + classEntity.GroupId,
                 Students = new List<StudentFinalGradeDto>()
             };
+
+            bool anyGrades = false;
 
             // Calculate grades for each student
             foreach (var student in classEntity.Students)
@@ -225,6 +275,8 @@ namespace api.repository
                         attendanceGradeAdded = true;
                         attendanceWeight = grade.GradeItem.Weight;
                     }
+
+                    anyGrades = true;
                 }
 
                 // If no "Attendances" grade exists, calculate it
@@ -250,7 +302,12 @@ namespace api.repository
 
                 studentDto.FinalGrade = finalGrade;
                 finalGradeDto.Students.Add(studentDto);
+                finalGradeDto.ClassAverage = -1;
             }
+
+            // Return null if no grades are found
+            if (!anyGrades)
+                return null;
 
             return finalGradeDto;
         }

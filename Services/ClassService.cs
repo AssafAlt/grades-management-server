@@ -389,7 +389,7 @@ namespace api.Services
         {
             try
             {
-                var res = await _gradeRepo.GetFinalGradesByClassId(classId);
+                var res = await _gradeRepo.GetGradesByClassId(classId);
                 if (res == null) return new ServiceResult { StatusCode = StatusCodes.Status400BadRequest, Message = "There are no grades!" };
                 return new ServiceResult { StatusCode = StatusCodes.Status200OK, Data = res };
             }
