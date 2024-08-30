@@ -407,6 +407,33 @@ namespace api.Services
                 };
             }
         }
+
+        public async Task<ServiceResult> DeleteFinalGradesAsync(int classId)
+        {
+            try
+            {
+                await _gradeRepo.DeleteFinalGradesAsync(classId);
+                return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status204NoContent,
+                    Message = "Final Grades Report was deleted successfully!",
+
+                };
+            }
+            catch (DbUpdateException dbEx)
+            {
+
+                var sqlException = dbEx.InnerException as SqlException;
+                var dbErrorMessage = sqlException?.Message ?? "A database error occurred.";
+
+                return new ServiceResult
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = dbErrorMessage,
+                    Data = null
+                };
+            }
+        }
     }
 }
 

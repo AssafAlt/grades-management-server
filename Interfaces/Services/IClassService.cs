@@ -14,6 +14,7 @@ namespace api.Interfaces.Services
     {
         public Task<ServiceResult> CreateAsync(CreateClassDto classDto, string teacherId);
         public Task<ServiceResult> DeleteAsync(int classId);
+        public Task<ServiceResult> DeleteFinalGradesAsync(int classId);
         public Task<ServiceResult> AddStudentToClassAsync(int classId, string studentId);
         public Task<ServiceResult> RemoveStudentFromClassAsync(int classId, string studentId);
         public Task<ServiceResult> AddStudentsToClassAsync(int classId, List<string> studentIds);

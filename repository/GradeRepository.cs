@@ -312,7 +312,17 @@ namespace api.repository
             return finalGradeDto;
         }
 
+        public async Task DeleteFinalGradesAsync(int classId)
+        {
+            var finalGradeModel = await _context.FinalGrades.FirstOrDefaultAsync(fg => fg.ClassId == classId);
+            if (finalGradeModel == null) return;
 
+
+            _context.FinalGrades.Remove(finalGradeModel);
+            await _context.SaveChangesAsync();
+
+
+        }
     }
 
 }

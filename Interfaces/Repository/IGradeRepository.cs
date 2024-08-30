@@ -14,6 +14,8 @@ namespace api.Interfaces.Repository
         public Task<FinalGradeDto> GetFinalGradesByClassId(int classId);
         public Task<FinalGradeDto> GetGradesByClassId(int classId);
 
+        public Task DeleteFinalGradesAsync(int classId);
+
         public Task SaveFinalGrade(FinalGradeDto finalGradeDto, int classId);
     }
 }

@@ -144,6 +144,15 @@ namespace api.Controllers
             return StatusCode(results.StatusCode, results.Data);
 
         }
+        [HttpDelete("{classId}/final-grades")]
+        public async Task<IActionResult> DeleteFinalGradesReport([FromRoute] int classId)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var results = await _classService.DeleteFinalGradesAsync(classId);
+            return StatusCode(results.StatusCode, results.Message);
+
+
+        }
         [HttpGet("{classId}/grades")]
         public async Task<IActionResult> GetGrades([FromRoute] int classId)
         {
