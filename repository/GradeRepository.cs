@@ -222,7 +222,7 @@ namespace api.repository
 
 
         }
-        public async Task<FinalGradeDto?> GetGradesByClassId(int classId)
+        public async Task<FinalGradeDto> GetGradesByClassId(int classId)
         {
             // Fetch the class entity along with students, their grades, and grade items
             var classEntity = await _context.Classes
@@ -305,9 +305,7 @@ namespace api.repository
                 finalGradeDto.ClassAverage = -1;
             }
 
-            // Return null if no grades are found
-            if (!anyGrades)
-                return null;
+
 
             return finalGradeDto;
         }
